@@ -54,7 +54,7 @@ const PRODUTOS = {
     { id: 's16', nome: '4 Queijos c/ Carne', preco: 12.0, emoji: '🥩', imagem: 'queijo.jpg' },
     { id: 's17', nome: '4 Queijos c/ Frango', preco: 12.0, emoji: '🍗', imagem: 'queijo.jpg' },
 	{ id: 's13', nome: 'Pizza', preco: 14.0, emoji: '🍕', imagem: 'pizza.jpg' },
-    { id: 's18', nome: 'Sem Miséria (Especial)', preco: 12.0, emoji: '⭐', imagem: 'images/especial.jpg' },
+    { id: 's18', nome: 'Sem Miséria (Especial)', preco: 12.0, emoji: '⭐', imagem: 'especial.jpg' },
   ],
 
   doces: [

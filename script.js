@@ -1,6 +1,7 @@
 /* ============================================================
-   MASSA ALEGRE — script.js v3
+   MASSA ALEGRE — script.js v4
    Ajustado para imagens reais + fallback por emoji
+   + controle de remover item direto no checkout
    ============================================================ */
 
 // ============================================================
@@ -9,7 +10,7 @@
 (function () {
   const img = document.getElementById('logo-img');
   if (img) {
-    img.src = 'logo.png';
+    img.src = 'logo2.png';
   }
 })();
 
@@ -53,7 +54,7 @@ const PRODUTOS = {
     { id: 's15', nome: '4 Queijos c/ Calabresa', preco: 12.0, emoji: '🌶️', imagem: 'queijo.jpg' },
     { id: 's16', nome: '4 Queijos c/ Carne', preco: 12.0, emoji: '🥩', imagem: 'queijo.jpg' },
     { id: 's17', nome: '4 Queijos c/ Frango', preco: 12.0, emoji: '🍗', imagem: 'queijo.jpg' },
-	{ id: 's13', nome: 'Pizza', preco: 14.0, emoji: '🍕', imagem: 'pizza.jpg' },
+    { id: 's13', nome: 'Pizza', preco: 14.0, emoji: '🍕', imagem: 'pizza.jpg' },
     { id: 's18', nome: 'Sem Miséria (Especial)', preco: 12.0, emoji: '⭐', imagem: 'especial.jpg' },
   ],
 
@@ -205,6 +206,16 @@ document.addEventListener('click', (e) => {
   if (btnMinus && btnMinus.dataset.id) {
     diminuirNoCarrinho(btnMinus.dataset.id);
   }
+
+  const botaoResumo = e.target.closest('.resumo-btn');
+  if (botaoResumo) {
+    const chave = botaoResumo.dataset.chave;
+    const acao = botaoResumo.dataset.acao;
+
+    if (acao === 'mais') aumentarNoCarrinhoCheckout(chave);
+    if (acao === 'menos') diminuirNoCarrinhoCheckout(chave);
+    if (acao === 'remover') removerDoCarrinhoCheckout(chave);
+  }
 });
 
 function adicionarAoCarrinho(id, sabor) {
@@ -231,6 +242,9 @@ function adicionarAoCarrinho(id, sabor) {
 
   flashCard(id);
   renderProdutos();
+  if (document.getElementById('tela-checkout')?.classList.contains('ativa')) {
+    renderCheckout();
+  }
   atualizarCartBar();
 }
 
@@ -242,6 +256,9 @@ function diminuirNoCarrinho(id) {
   }
 
   renderProdutos();
+  if (document.getElementById('tela-checkout')?.classList.contains('ativa')) {
+    renderCheckout();
+  }
   atualizarCartBar();
 }
 
@@ -252,6 +269,51 @@ function flashCard(id) {
     void card.offsetWidth;
     card.classList.add('flash');
     setTimeout(() => card.classList.remove('flash'), 500);
+  }
+}
+
+// ============================================================
+// CONTROLES DO CARRINHO NO CHECKOUT
+// ============================================================
+
+function aumentarNoCarrinhoCheckout(chave) {
+  const item = carrinho.find((c) => c.chave === chave);
+  if (!item) return;
+
+  item.qty++;
+  renderProdutos();
+  renderCheckout();
+  atualizarCartBar();
+}
+
+function diminuirNoCarrinhoCheckout(chave) {
+  const item = carrinho.find((c) => c.chave === chave);
+  if (!item) return;
+
+  if (item.qty > 1) {
+    item.qty--;
+  } else {
+    carrinho = carrinho.filter((c) => c.chave !== chave);
+  }
+
+  renderProdutos();
+  renderCheckout();
+  atualizarCartBar();
+
+  if (carrinho.length === 0) {
+    voltarParaCardapio();
+  }
+}
+
+function removerDoCarrinhoCheckout(chave) {
+  carrinho = carrinho.filter((c) => c.chave !== chave);
+
+  renderProdutos();
+  renderCheckout();
+  atualizarCartBar();
+
+  if (carrinho.length === 0) {
+    voltarParaCardapio();
   }
 }
 
@@ -518,10 +580,19 @@ function renderCheckout() {
 
     div.innerHTML = `
       <span class="resumo-item-emoji">${item.emoji}</span>
+
       <div class="resumo-item-info">
         <p class="resumo-item-name">${item.nome}</p>
-        <p class="resumo-item-sub">${item.qty}x ${fmt(item.preco)}</p>
+        <p class="resumo-item-sub">${fmt(item.preco)} cada</p>
+
+        <div class="resumo-item-acoes">
+          <button type="button" class="resumo-btn menos" data-acao="menos" data-chave="${item.chave}">−</button>
+          <span class="resumo-item-qtd">${item.qty}</span>
+          <button type="button" class="resumo-btn mais" data-acao="mais" data-chave="${item.chave}">+</button>
+          <button type="button" class="resumo-btn remover" data-acao="remover" data-chave="${item.chave}">Remover</button>
+        </div>
       </div>
+
       <span class="resumo-item-price">${fmt(sub)}</span>
     `;
 

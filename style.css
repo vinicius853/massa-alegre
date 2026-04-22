@@ -1,5 +1,7 @@
 /* ============================================================
-   MASSA ALEGRE — style.css v3 (AJUSTADO E COMPLETO)
+   MASSA ALEGRE — style.css v4
+   Ajustado e completo
+   + controles de item no checkout
    ============================================================ */
 
 :root {
@@ -589,6 +591,51 @@ body {
   font-size: 13px;
   font-weight: 900;
   color: var(--red);
+}
+
+/* NOVOS CONTROLES NO CHECKOUT */
+.resumo-item-acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.resumo-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .15s ease;
+}
+
+.resumo-btn.menos {
+  background: #FDECEC;
+  color: var(--red);
+}
+
+.resumo-btn.mais {
+  background: var(--red);
+  color: #fff;
+}
+
+.resumo-btn.remover {
+  background: #f3f3f3;
+  color: var(--gray-700);
+}
+
+.resumo-btn:active {
+  transform: scale(.96);
+}
+
+.resumo-item-qtd {
+  min-width: 24px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 14px;
 }
 
 .resumo-totais {
